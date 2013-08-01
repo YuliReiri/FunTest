@@ -1,5 +1,7 @@
+ * mouse left click generates circles
+ * shift+mouse click generates rects
  * circles and rect has also different colors
  * knowing issues: 
-   * smth objects stucks on the borders and could pass via it
+   * sometimes objects stucks on the borders and could pass via it
  * not a bug:
    * speed of move could be slow, but objects are moving...
