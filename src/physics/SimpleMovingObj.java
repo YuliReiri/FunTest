@@ -27,10 +27,18 @@ public class SimpleMovingObj extends SceneObject {
 // in case of complex object behavior and collision between them we need to introduce physics scene
 			Rectangle scn_rct = scene.getBounds();
 			Rectangle obj_rct = _graphicsObject.getBounds();
-			if ( getPos().x <= 0  || (getPos().x + obj_rct.width) >= scn_rct.width ) _velocity.x *= -1;
-			if ( getPos().y <= 0  || (getPos().y + obj_rct.height) >= scn_rct.height) { 
-				_velocity.y *= -1;
-			}
+			if ( getPos().x < 0.0 && _velocity.x < 0.0 )
+				_velocity.x *= -1.0;
+			
+			if ( (getPos().x + obj_rct.width) > scn_rct.width && _velocity.x > 0.0)
+				_velocity.x *= -1.0;
+			
+			if ( getPos().y < 0.0 && _velocity.y < 0.0)
+				_velocity.y *= -1.0;
+			
+			if ( ( getPos().y + obj_rct.height) > scn_rct.height && _velocity.y > 0.0 )  
+				_velocity.y *= -1.0;
+		
 	
 		getPos().setLocation(getPos().getX()+_velocity.getX()*delta_time, getPos().getY()+_velocity.getY()*delta_time);
 	}

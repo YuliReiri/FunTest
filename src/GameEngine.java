@@ -34,11 +34,11 @@ public class GameEngine extends JComponent implements MouseListener, KeyListener
  */
 	private CircleFactory _factoryCrl = new CircleFactory(
 			new Rectangle2D.Double(WIDTH_SCN/4, HIEGHT_SCN/4, WIDTH_SCN - WIDTH_SCN/4, HIEGHT_SCN - HIEGHT_SCN/4), 
-			new Point2D.Double(-50.0, -50.0), new Point2D.Double(200.0, 200.0));
+			new Point2D.Double(-200.0, -200.0), new Point2D.Double(200.0, 200.0));
 	
 	private RectFactory _factoryRct = new RectFactory(
 			new Rectangle2D.Double(WIDTH_SCN/4, HIEGHT_SCN/4, WIDTH_SCN - WIDTH_SCN/4, HIEGHT_SCN - HIEGHT_SCN/4), 
-			new Point2D.Double(-50.0, -50.0), new Point2D.Double(200.0, 200.0));
+			new Point2D.Double(-200.0, -200.0), new Point2D.Double(200.0, 200.0));
 	
 	public GameEngine(){
 		
@@ -66,12 +66,15 @@ public class GameEngine extends JComponent implements MouseListener, KeyListener
 	@Override
     public void paintComponent(Graphics device) {
 		
-// calculate time between frames  		
+		
+				
+		// calculate time between frames  		
 		Date cur_time = new Date ();
 		_deltaTime = (cur_time.getTime()-_prevTime)/1000.0;
 		
-// update scene objects. in this test only move and collision detection
-		_scene.update(_deltaTime);		
+		// update scene objects. in this test only move and collision detection
+		_scene.update(_deltaTime);
+				
 		super.paintComponent(device);
 // setup graphics device to graphics context		
 		_graphicsContext.setGrapicsDevice((Graphics2D)device);
