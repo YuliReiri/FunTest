@@ -24,7 +24,7 @@ public class SceneImpl implements Scene {
 		setSceneBorders(scene_borders);
 		
 	}
-	public void update(double delta_time){
+	public void update(int delta_time){
 // update objects positions 
 		for (SceneObject object :  _objects ){
 			object.update(this, delta_time);

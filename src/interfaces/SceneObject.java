@@ -16,7 +16,7 @@ public abstract class SceneObject {
 	public SceneObject(Point2D.Double pos){
 		setPos(pos);
 	}
-	public abstract void update ( Scene scene, double delta_time );
+	public abstract void update ( Scene scene, int delta_time );
 	public abstract void render ( Scene scene );
 	
 	public Point2D.Double getPos() {

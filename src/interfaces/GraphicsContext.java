@@ -1,6 +1,7 @@
 package interfaces;
 import java.awt.geom.Point2D.Double;
 
+import primitives.AnimatedBitmap;
 import primitives.Primitive;
 
 public interface GraphicsContext {
@@ -20,4 +21,6 @@ public interface GraphicsContext {
  * @param transform - transform point 
  */
 	public void RenderPrimitive(Primitive obj, Double point);
+
+	public void RenderBitmap(AnimatedBitmap animatedBitmap, Double transform, int offset_x, int offset_y);
 }

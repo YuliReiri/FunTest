@@ -7,12 +7,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.util.Date;
 
 import javax.swing.JComponent;
 
-import primitives.CircleFactory;
-import primitives.RectFactory;
+import factories.AnimatedSpriteFactory;
+import factories.CircleFactory;
+import factories.RectFactory;
+
 
 
 
@@ -21,30 +24,39 @@ public class GameEngine extends JComponent implements MouseListener, KeyListener
 	private final int  WIDTH_SCN = 400;
 	private final int  HIEGHT_SCN = 400;
 	private SceneImpl _scene;
-	private double _deltaTime;
+	private int _deltaTime;
 
 	private GraphicsContextImpl _graphicsContext;
 	private long _prevTime = new Date().getTime();
-	private boolean _shiftPressed = false;
 
 	private static final long serialVersionUID = 1L;
 	
 /**
  * Creating primitive factories. 
  */
-	private CircleFactory _factoryCrl = new CircleFactory(
-			new Rectangle2D.Double(WIDTH_SCN/4, HIEGHT_SCN/4, WIDTH_SCN - WIDTH_SCN/4, HIEGHT_SCN - HIEGHT_SCN/4), 
-			new Point2D.Double(-200.0, -200.0), new Point2D.Double(200.0, 200.0));
 	
-	private RectFactory _factoryRct = new RectFactory(
-			new Rectangle2D.Double(WIDTH_SCN/4, HIEGHT_SCN/4, WIDTH_SCN - WIDTH_SCN/4, HIEGHT_SCN - HIEGHT_SCN/4), 
-			new Point2D.Double(-200.0, -200.0), new Point2D.Double(200.0, 200.0));
+	
+	
+	private final String _RESOURCE1 = "res/bouncing.bmp";
+	private final Rectangle2D.Double _AREA = new Rectangle2D.Double(WIDTH_SCN/4, HIEGHT_SCN/4, WIDTH_SCN - WIDTH_SCN/4, HIEGHT_SCN - HIEGHT_SCN/4);
+	private final Point2D.Double _POS = new Point2D.Double(-100.0, -100.0);
+	private final Point2D.Double _VEL = new Point2D.Double(100.0, 100.0);
+	private RectFactory _factoryRct = new RectFactory(_AREA, _POS, _VEL);
+	private CircleFactory _factoryCrl = new CircleFactory(_AREA, _POS, _VEL);
+	private AnimatedSpriteFactory _factorySprite;
+	
 	
 	public GameEngine(){
 		
 		
 		_graphicsContext = new GraphicsContextImpl(WIDTH_SCN, HIEGHT_SCN);
 		_scene = new SceneImpl(new Rectangle2D.Double(0,0,WIDTH_SCN,HIEGHT_SCN), _graphicsContext);
+		
+		try {
+			_factorySprite = new AnimatedSpriteFactory(_RESOURCE1, _AREA, _POS, _VEL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		addMouseListener(this);
 		addKeyListener(this);
@@ -70,7 +82,7 @@ public class GameEngine extends JComponent implements MouseListener, KeyListener
 				
 		// calculate time between frames  		
 		Date cur_time = new Date ();
-		_deltaTime = (cur_time.getTime()-_prevTime)/1000.0;
+		_deltaTime = (int)(cur_time.getTime()-_prevTime);
 		
 		// update scene objects. in this test only move and collision detection
 		_scene.update(_deltaTime);
@@ -91,10 +103,14 @@ public class GameEngine extends JComponent implements MouseListener, KeyListener
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (_shiftPressed){
-			_scene.createSceneObject(_factoryRct);
-		} else {
-			_scene.createSceneObject(_factoryCrl);
+		if (e.getButton() == MouseEvent.BUTTON1){
+			if (e.isShiftDown() ){
+				_scene.createSceneObject(_factoryRct);
+			} else if (e.isControlDown()) {
+				_scene.createSceneObject(_factorySprite);
+			} else {
+				_scene.createSceneObject(_factoryCrl);
+			}
 		}
 	}
 
@@ -120,14 +136,12 @@ public class GameEngine extends JComponent implements MouseListener, KeyListener
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		if (KeyEvent.VK_SHIFT  == arg0.getKeyCode()){
-			_shiftPressed = true;
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		if (KeyEvent.VK_SHIFT  == arg0.getKeyCode()){
-			_shiftPressed  = false;
 		}
 	}
 

@@ -11,11 +11,12 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 
+import primitives.AnimatedBitmap;
 import primitives.Primitive;
 
 
 /**
- * Graphics context represent work with low level system API
+ * Graphics context representwork with low level system API
  * @author yuli
  *
  */
@@ -25,13 +26,14 @@ public class GraphicsContextImpl implements GraphicsContext, ImageObserver {
 	private Graphics2D _render;
 	private Graphics2D _device;
 	private AffineTransform _transform = new AffineTransform();
+	private int _width;
+	private int _height;
 	
 	
 	public GraphicsContextImpl(int width, int height){
-		
+		_width = width;
+		_height = height;
 		_device = null;
-		_bufferedImage = new BufferedImage(width, height,  
-				BufferedImage.TYPE_INT_RGB);
 	}
 	/**
 	 * Sets render to the context
@@ -39,24 +41,24 @@ public class GraphicsContextImpl implements GraphicsContext, ImageObserver {
 	 */
 	public void setGrapicsDevice(Graphics2D device){
 		_device = device;
+		//_bufferedImage = _device.getDeviceConfiguration().createCompatibleImage(_width, _height, Transparency.OPAQUE);
+		_bufferedImage = new BufferedImage(_width, _height, BufferedImage.TYPE_INT_ARGB);
 	}
 
 	@Override
 	public void start() {
 		_render = _bufferedImage.createGraphics();
+		_render.setRenderingHint (RenderingHints.KEY_ANTIALIASING,   RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		Composite backup=_render.getComposite();
-		
-		_render.setComposite(
-				  AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
 		Rectangle2D.Double rect =  new Rectangle2D.Double(0, 0, 
 				_bufferedImage.getWidth(),
 				_bufferedImage.getHeight()); 
+
+		_render.setComposite(AlphaComposite.Src);
 		_render.fill(rect);
 		_render.setComposite(backup);
-
 		
-		_render.setRenderingHint (RenderingHints.KEY_ANTIALIASING,   RenderingHints.VALUE_ANTIALIAS_ON);
 	}
 
 	@Override
@@ -75,11 +77,20 @@ public class GraphicsContextImpl implements GraphicsContext, ImageObserver {
 	 */
 	@Override
 	public void RenderPrimitive(Primitive obj, Point2D.Double point) {
-		_transform.setToIdentity();
-		_transform.translate(point.x, point.y);
+		setTransform(point);
 		_render.setPaint(obj.getFillColor());
-		_render.setTransform(_transform);
 		_render.fill(obj.getShape());
 	}
-	
+	@Override
+	public void RenderBitmap(AnimatedBitmap bitmap, Point2D.Double point, int offset_x, int offset_y) {
+		setTransform(point);
+		_render.setClip(bitmap.getShape());
+		_render.drawImage(bitmap.getData(), offset_x, offset_y, null);
+		_render.setClip(null);
+	}
+	private void setTransform(Point2D.Double point) {
+		_transform.setToIdentity();
+		_transform.translate(point.x, point.y);
+		_render.setTransform(_transform);
+	}
 }

@@ -13,7 +13,7 @@ public class SimpleMovingObj extends SceneObject {
 
 	
 	private Point2D.Double _velocity;
-	private GraphicsObject _graphicsObject;
+	protected GraphicsObject _graphicsObject;
 
 
 	public SimpleMovingObj(GraphicsObject graphics_obj, Point2D.Double pos, Point2D.Double velocity) {
@@ -23,7 +23,7 @@ public class SimpleMovingObj extends SceneObject {
 	}
 
 	@Override
-	public void update(Scene scene, double delta_time) {
+	public void update(Scene scene, int delta_time) {
 // in case of complex object behavior and collision between them we need to introduce physics scene
 			Rectangle scn_rct = scene.getBounds();
 			Rectangle obj_rct = _graphicsObject.getBounds();
@@ -40,7 +40,7 @@ public class SimpleMovingObj extends SceneObject {
 				_velocity.y *= -1.0;
 		
 	
-		getPos().setLocation(getPos().getX()+_velocity.getX()*delta_time, getPos().getY()+_velocity.getY()*delta_time);
+		getPos().setLocation(getPos().getX()+_velocity.getX()*delta_time/1000.0, getPos().getY()+_velocity.getY()*delta_time/1000.0);
 	}
 
 	@Override
