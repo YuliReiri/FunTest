@@ -1,6 +1,7 @@
- * to execute project go to bin directory and run: java FuntactixTest
+ * to execute project go to root directory and run: java -classpath ./bin FuntactixTest
  * mouse left click generates circles
  * shift+mouse click generates rects
+ * ctr+mouse click generates animated flying penguin. each penguin has own animation speed and movement speed
  * circles and rect has also different colors
  * not a bug:
    * speed of move could be slow, but objects are moving...
